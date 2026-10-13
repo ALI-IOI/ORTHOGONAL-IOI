@@ -14,7 +14,8 @@
 /* ---------- Theme ---------- */
 :root{
   --plum:#2d1b36; --plum-2:#4a3356;
-  --bg:#f7f4f0; --surface:#ffffff; --sunk:#f1ece6; --ink:#1d1720; --muted:#5f5566; --line:#e4dde3;
+  --bg:#fbfaf8; --surface:#ffffff; --sunk:#f4f1ee; --ink:#1d1720; --muted:#5f5566; --line:#e6e1e6;
+  --head-bg:#ffffff; --head-ink:#2d1b36; --head-line:#e6e1e6;
   --teal:#1f8a80; --copper:#c4703a; --accent:#2d1b36;
   --ok:#1f7a4d; --ok-bg:#e5f4ec; --bad:#b3261e; --bad-bg:#fbe9e7;
   --grid-minor:#eee9ee; --grid-major:#dcd4dc; --axis:#3b3040; --label:#6a5f70; --plot-bg:#ffffff;
@@ -24,12 +25,14 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --head-bg:#1d1424; --head-ink:#f4eef6; --head-line:#352c3b;
   --bg:#141017; --surface:#1d1822; --sunk:#241e2a; --ink:#f1ecf3; --muted:#b3a8b8; --line:#352c3b;
   --teal:#53c2b6; --copper:#e0975f; --accent:#d9c7e6;
   --ok:#6fd39f; --ok-bg:#16301f; --bad:#ff8a80; --bad-bg:#3a1a19;
   --grid-minor:#231d28; --grid-major:#352c3b; --axis:#cfc3d6; --label:#a89cae; --plot-bg:#19141d;
   color-scheme:dark}}
 :root[data-theme="dark"]{
+  --head-bg:#1d1424; --head-ink:#f4eef6; --head-line:#352c3b;
   --bg:#141017; --surface:#1d1822; --sunk:#241e2a; --ink:#f1ecf3; --muted:#b3a8b8; --line:#352c3b;
   --teal:#53c2b6; --copper:#e0975f; --accent:#d9c7e6;
   --ok:#6fd39f; --ok-bg:#16301f; --bad:#ff8a80; --bad-bg:#3a1a19;
@@ -43,13 +46,18 @@ button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 
 /* ---------- Header ---------- */
-.top{background:var(--plum);color:#f4eef6}
+.top{background:var(--head-bg);color:var(--head-ink);border-bottom:1px solid var(--head-line)}
 .top .in{max-width:1500px;margin:0 auto;padding:14px 20px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .brand{display:flex;gap:12px;align-items:center;min-width:0}
 .brand svg{flex:none;width:34px;height:34px}
 .brand b{display:block;font:700 18px/1.15 var(--serif)}
 .brand small{display:block;font-size:12px;opacity:.78;line-height:1.35}
-.badge{font-size:12px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 11px;white-space:nowrap}
+.theme-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--head-line);background:var(--sunk);color:var(--head-ink);border-radius:999px;padding:7px 14px 7px 10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.theme-btn:hover{border-color:var(--muted)}
+.theme-btn svg{width:18px;height:18px}
+.theme-btn .moon,:root[data-theme="dark"] .theme-btn .sun{display:none}
+:root[data-theme="dark"] .theme-btn .moon{display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .theme-btn .sun{display:none}:root:not([data-theme="light"]) .theme-btn .moon{display:block}}
 
 /* ---------- Two columns: graph 70% | inputs 30% ---------- */
 .app{max-width:1500px;margin:0 auto;padding:16px 20px 8px;display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,3fr);gap:16px;align-items:start}
@@ -133,6 +141,9 @@ input[type=color]{width:38px;height:30px;border:1px solid var(--line);border-rad
 @media (max-width:520px){
   .top .in,.app,.foot{padding-left:16px;padding-right:16px}
   .brand b{font-size:16px}
+  .top .in{flex-wrap:nowrap}
+  .theme-btn{padding:8px;flex:none}
+  .theme-btn span{display:none}
   .plot{height:58vh;min-height:300px}
   .hint{display:none}
 }
@@ -149,7 +160,11 @@ input[type=color]{width:38px;height:30px;border:1px solid var(--line);border-rad
         <small>Type a family of curves and see its orthogonal trajectories</small>
       </div>
     </div>
-    <span class="badge">C++ · WebAssembly</span>
+    <button type="button" class="theme-btn" id="themeBtn" aria-label="Switch between bright and dark theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>
+      <span id="themeLabel">Bright</span>
+    </button>
   </div>
 </header>
 
@@ -566,6 +581,30 @@ var createOrthoModule=(()=>{var _scriptName=globalThis.document?.currentScript?.
       afterViewChange();
     } else requestDraw();
   });
+
+  // ---------- bright / dark theme (remembered in this browser) ----------
+  var colorsTouched = false;
+  function isDark() {
+    var t = document.documentElement.getAttribute("data-theme");
+    return t ? t === "dark" : window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+  function applyTheme(t) {
+    if (t) document.documentElement.setAttribute("data-theme", t);
+    $("themeLabel").textContent = isDark() ? "Dark" : "Bright";
+    if (!colorsTouched) {           // follow the theme's own curve colours
+      $("colFam").value = css("--teal"); $("colOrt").value = css("--copper");
+      $("lgFam").style.background = $("colFam").value; $("lgOrt").style.background = $("colOrt").value;
+    }
+    requestDraw();
+  }
+  try { var saved = localStorage.getItem("ortho-theme"); if (saved === "dark" || saved === "light") applyTheme(saved); } catch (e) {}
+  $("themeBtn").addEventListener("click", function () {
+    var t = isDark() ? "light" : "dark";
+    applyTheme(t);
+    try { localStorage.setItem("ortho-theme", t); } catch (e) {}
+  });
+  ["colFam", "colOrt"].forEach(function (id) { $(id).addEventListener("input", function () { colorsTouched = true; }); });
+  applyTheme(null);
 
   // ---------- start: load the C++ engine ----------
   draw();
