@@ -1,9 +1,6 @@
 # Orthogonal - IOI
 
-**From Curves to Solutions: Exploring Differential Equations**
-MATH 205 · Differential Equations, Laplace Transformation and Fourier Transformations
-BAUST Khulna · CSE–3A · Group 7 · [Group Name]
-Instructor: Pulak Kundu, Lecturer, Department of Mathematics
+**Type a family of curves and see its orthogonal trajectories.**
 
 You type a one-parameter family of curves, such as `y = c x^2`, and the tool:
 
@@ -43,7 +40,7 @@ src/                C++ source (all the logic)
   Types.h             small shared types (Box, Polyline, Step)
 web/page.html       page layout + minimal JavaScript (the source of index.html)
 tests/test_main.cpp native test program (examples + invalid inputs); tests/test_output.txt = last run
-docs/Code-Walkthrough.docx   plain-English explanation of every file for the viva
+docs/Code-Walkthrough.docx   plain-English explanation of every file and function
 build.sh            builds index.html with Emscripten
 build_native_tests.sh  builds and runs the tests with g++
 tools/make_single_file.py  build helper that puts the JavaScript and WebAssembly inside the HTML

@@ -9,7 +9,7 @@
   - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "x^2 + 2y^2 = k"
-  crossings=56  max|cos|=0.0251862  mean|cos|=0.00445631  skipped(singular)=0  time=2.63314 ms  json=87 KB
+  crossings=56  max|cos|=0.0251862  mean|cos|=0.00445631  skipped(singular)=0  time=2.51573 ms  json=87 KB
   RESULT: PASS
 === 2. x^2 + y^2 = c  [x^2 + y^2 = c]
   - Family of curves (parameter c):  x^2 + y^2 = c
@@ -22,7 +22,7 @@
   - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "ln(|y|) - ln(|x|) = K   ⇒   y = kx   (k = ±e^(K/1), any constant)"
-  crossings=119  max|cos|=6.14381e-15  mean|cos|=1.12759e-15  skipped(singular)=0  time=17.897 ms  json=132 KB
+  crossings=119  max|cos|=6.14381e-15  mean|cos|=1.12759e-15  skipped(singular)=0  time=17.3478 ms  json=132 KB
   RESULT: PASS
 === 3. xy = c  [xy = c]
   - Family of curves (parameter c):  xy = c
@@ -35,7 +35,7 @@
   - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "x^2 - y^2 = k"
-  crossings=73  max|cos|=0.00627375  mean|cos|=0.00205227  skipped(singular)=0  time=7.83076 ms  json=160 KB
+  crossings=73  max|cos|=0.00627375  mean|cos|=0.00205227  skipped(singular)=0  time=8.45375 ms  json=160 KB
   RESULT: PASS
 === 4. y = c e^x  [y = c e^x]
   - Family of curves (parameter c):  y = ce^x
@@ -48,7 +48,7 @@
   - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "2x + y^2 = k"
-  crossings=71  max|cos|=0.0159897  mean|cos|=0.00417022  skipped(singular)=9  time=3.74032 ms  json=226 KB
+  crossings=71  max|cos|=0.0159897  mean|cos|=0.00417022  skipped(singular)=9  time=3.75213 ms  json=226 KB
   RESULT: PASS
 === 5. y = cx (lines)  [y = cx]
   - Family of curves (parameter c):  y = cx
@@ -61,7 +61,7 @@
   - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "x^2 + y^2 = k"
-  crossings=43  max|cos|=0.0158107  mean|cos|=0.00341466  skipped(singular)=29  time=1.69906 ms  json=107 KB
+  crossings=43  max|cos|=0.0158107  mean|cos|=0.00341466  skipped(singular)=29  time=1.82397 ms  json=107 KB
   RESULT: PASS
 === 6a. (x-c)^2 + y^2 = c^2 (c^2 cancels -> linear)  [(x-c)^2 + y^2 = c^2]
   - Family of curves (parameter c):  (x - c)^2 + y^2 = c^2
@@ -71,7 +71,7 @@
   - Solve:  The equation is not separable (the factor y^2 - x^2 contains both x and y). Solved numerically with the 4th-order Runge–Kutta method (RK4).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: ""
-  crossings=51  max|cos|=0.0179755  mean|cos|=0.00452875  skipped(singular)=89  time=20.7662 ms  json=98 KB
+  crossings=51  max|cos|=0.0179755  mean|cos|=0.00452875  skipped(singular)=89  time=21.2618 ms  json=98 KB
   RESULT: PASS
 === 6b. (x-c)^2 + y^2 = 1 (non-linear in c)  [(x-c)^2 + y^2 = 1]
   - Family of curves (parameter c):  (x - c)^2 + y^2 = 1
@@ -81,7 +81,7 @@
   - Solve:  No closed form attempted because c was not eliminated symbolically. Solved numerically with the 4th-order Runge–Kutta method (RK4).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: ""
-  crossings=24  max|cos|=0.00682724  mean|cos|=0.00275017  skipped(singular)=0  time=20.3933 ms  json=46 KB
+  crossings=24  max|cos|=0.00682724  mean|cos|=0.00275017  skipped(singular)=0  time=19.6577 ms  json=46 KB
   RESULT: PASS
 === 7. y = c (horizontal lines)  [y = c]
   - Family of curves (parameter c):  y = c
@@ -91,7 +91,7 @@
   - Solve:  dx/dy = 0   ⇒   x = k   (vertical lines)
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "x = k"
-  crossings=63  max|cos|=0  mean|cos|=0  skipped(singular)=0  time=1.82678 ms  json=103 KB
+  crossings=63  max|cos|=0  mean|cos|=0  skipped(singular)=0  time=1.52721 ms  json=103 KB
   RESULT: PASS
 === 8. y = sin(x) + c (not separable? ortho -1/cos x)  [y = sin(x) + c]
   - Family of curves (parameter c):  y = sin(x) + c
@@ -102,7 +102,7 @@
   - Solve:  Separable, but an integral is outside the program's small table of integrals. Solved numerically with the 4th-order Runge–Kutta method (RK4).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: ""
-  crossings=84  max|cos|=0.00490494  mean|cos|=0.00133827  skipped(singular)=0  time=2.7611 ms  json=202 KB
+  crossings=84  max|cos|=0.00490494  mean|cos|=0.00133827  skipped(singular)=0  time=2.5047 ms  json=202 KB
   RESULT: PASS
 === 9. y^2 = 4cx (parabolas)  [y^2 = 4cx]
   - Family of curves (parameter c):  y^2 = 4cx
@@ -115,7 +115,7 @@
   - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "2x^2 + y^2 = k"
-  crossings=48  max|cos|=0.0220751  mean|cos|=0.00315424  skipped(singular)=16  time=16.8578 ms  json=98 KB
+  crossings=48  max|cos|=0.0220751  mean|cos|=0.00315424  skipped(singular)=16  time=15.6658 ms  json=98 KB
   RESULT: PASS
 === 10. x = c (vertical lines)  [x = c]
   - Family of curves (parameter c):  x = c
@@ -125,7 +125,7 @@
   - Solve:  dy/dx = 0   ⇒   y = k   (horizontal lines)
   - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
   closed form: "y = k"
-  crossings=35  max|cos|=0  mean|cos|=0  skipped(singular)=0  time=6.48818 ms  json=61 KB
+  crossings=35  max|cos|=0  mean|cos|=0  skipped(singular)=0  time=6.51725 ms  json=61 KB
   RESULT: PASS
 === INVALID empty equation: "Invalid information: The field 'Equation of the family' is empty. Please fill it in."
   RESULT: PASS

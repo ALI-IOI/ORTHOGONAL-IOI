@@ -12,7 +12,7 @@ A step-by-step guide. No coding needed for steps 1–4.
 - **Without internet (for the classroom):** on GitHub click **Code → Download ZIP**, unzip it and
   double-click `index.html`. Everything works offline, because the C++ engine is inside that one file.
 
-## 2. Enter the teacher's question
+## 2. Enter a family of curves
 
 The form is on the right (on phones and tablets it is below the graph). Fill it from top to bottom:
 
@@ -50,7 +50,7 @@ Not sure? Click one of the **Examples** to fill the form.
 - **Perpendicularity check:** the program finds the crossings of the two families and measures the angle.
   A largest |cos θ| near 0 means the tangents meet at 90°.
 
-## 5. For the viva
+## 5. Understand the code
 
 - `docs/Code-Walkthrough.docx` explains every C++ file and important function in plain English.
 - Run the tests yourself: `./build_native_tests.sh` (needs g++). The last output is in `tests/test_output.txt`.
