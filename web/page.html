@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Orthogonal trajectories of a family of curves — MATH 205 Group 7 project. All mathematics is written in C++ and runs in the browser as WebAssembly.">
+<meta name="theme-color" content="#2d1b36">
+<title>Orthogonal - IOI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232d1b36'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%2353c2b6' stroke-width='2.5'/%3E%3Cpath d='M4 28L28 4' stroke='%23e0975f' stroke-width='2.5'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap">
+<style>
+/* ---------- Theme (colours taken from the Group 7 poster) ---------- */
+:root{
+  --plum:#2d1b36; --plum-2:#4a3356;
+  --bg:#f7f4f0; --surface:#ffffff; --sunk:#f1ece6; --ink:#1d1720; --muted:#5f5566; --line:#e4dde3;
+  --teal:#1f8a80; --copper:#c4703a; --accent:#2d1b36;
+  --ok:#1f7a4d; --ok-bg:#e5f4ec; --bad:#b3261e; --bad-bg:#fbe9e7;
+  --grid-minor:#eee9ee; --grid-major:#dcd4dc; --axis:#3b3040; --label:#6a5f70; --plot-bg:#ffffff;
+  --serif:"Source Serif 4",Cambria,Georgia,"Times New Roman",serif;
+  --sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141017; --surface:#1d1822; --sunk:#241e2a; --ink:#f1ecf3; --muted:#b3a8b8; --line:#352c3b;
+  --teal:#53c2b6; --copper:#e0975f; --accent:#d9c7e6;
+  --ok:#6fd39f; --ok-bg:#16301f; --bad:#ff8a80; --bad-bg:#3a1a19;
+  --grid-minor:#231d28; --grid-major:#352c3b; --axis:#cfc3d6; --label:#a89cae; --plot-bg:#19141d;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141017; --surface:#1d1822; --sunk:#241e2a; --ink:#f1ecf3; --muted:#b3a8b8; --line:#352c3b;
+  --teal:#53c2b6; --copper:#e0975f; --accent:#d9c7e6;
+  --ok:#6fd39f; --ok-bg:#16301f; --bad:#ff8a80; --bad-bg:#3a1a19;
+  --grid-minor:#231d28; --grid-major:#352c3b; --axis:#cfc3d6; --label:#a89cae; --plot-bg:#19141d;
+  color-scheme:dark}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);-webkit-font-smoothing:antialiased;
+  padding:env(safe-area-inset-top,0) env(safe-area-inset-right,0) env(safe-area-inset-bottom,0) env(safe-area-inset-left,0)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+
+/* ---------- Header ---------- */
+.top{background:var(--plum);color:#f4eef6}
+.top .in{max-width:1500px;margin:0 auto;padding:14px 20px;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.brand svg{flex:none;width:34px;height:34px}
+.brand b{display:block;font:700 18px/1.15 var(--serif)}
+.brand small{display:block;font-size:12px;opacity:.78;line-height:1.35}
+.badge{font-size:12px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:5px 11px;white-space:nowrap}
+
+/* ---------- Two columns: graph 70% | inputs 30% ---------- */
+.app{max-width:1500px;margin:0 auto;padding:16px 20px 8px;display:grid;grid-template-columns:minmax(0,7fr) minmax(300px,3fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.graph-card{overflow:hidden}
+.bar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;min-width:0}
+.legend span{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.legend i{width:22px;height:3px;border-radius:2px;flex:none}
+.legend code{font:13px var(--serif);overflow-wrap:anywhere}
+.tools{display:flex;gap:6px}
+.icon-btn{border:1px solid var(--line);background:var(--surface);border-radius:9px;min-width:36px;height:36px;padding:0 10px;cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.icon-btn:hover{border-color:var(--muted)}
+.plot{position:relative;height:min(72vh,720px);min-height:320px;background:var(--plot-bg)}
+canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas.drag{cursor:grabbing}
+.hint{position:absolute;right:10px;bottom:8px;font-size:11.5px;color:var(--label);background:var(--plot-bg);padding:2px 6px;border-radius:6px;pointer-events:none;opacity:.9}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px}
+.check{padding:10px 14px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.check b{color:var(--ink)}
+
+.steps{margin-top:16px;padding:16px 18px}
+.steps h2,.panel h2{font:600 18px/1.2 var(--serif);margin:0 0 10px}
+.steps ol{margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:28px minmax(0,1fr);gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.steps li::before{content:counter(s);grid-row:span 2;width:24px;height:24px;border-radius:50%;background:var(--plum);color:#fff;font:600 12px/24px var(--sans);text-align:center}
+:root[data-theme="dark"] .steps li::before{background:var(--plum-2)}
+.steps .t{font-weight:600;font-size:14px}
+.steps .m{font:16px/1.5 var(--serif);overflow-wrap:anywhere}
+sup{font-size:.72em;line-height:0}
+.empty{color:var(--muted);font-size:14px}
+
+/* ---------- Input panel ---------- */
+.panel{padding:16px 16px 18px;position:sticky;top:12px}
+.field{margin-bottom:14px}
+.field>label,.field>.lbl{display:block;font-weight:600;font-size:13.5px;margin-bottom:5px}
+.field .num{display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--sunk);text-align:center;font:600 11px/20px var(--sans);margin-right:6px;color:var(--muted)}
+.help{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+input[type=text],input[type=number]{width:100%;border:1px solid var(--line);background:var(--sunk);border-radius:9px;padding:9px 11px;font-size:16px;min-width:0}
+input.eq{font-family:var(--serif);font-size:17px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.seg label{text-align:center;padding:7px 4px;border-radius:7px;cursor:pointer;font-size:13px;line-height:1.25}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label:has(input:checked){background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:600}
+.seg label.on{background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid2 label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+.colors{display:flex;gap:14px;flex-wrap:wrap}
+.colors label{display:flex;align-items:center;gap:8px;font-size:13px}
+input[type=color]{width:38px;height:30px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:2px;cursor:pointer}
+.examples{display:flex;flex-wrap:wrap;gap:6px}
+.ex{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 11px;font:14px var(--serif);cursor:pointer}
+.ex:hover{border-color:var(--teal);color:var(--teal)}
+.sim{width:100%;margin-top:6px;border:0;border-radius:11px;padding:13px;background:var(--plum);color:#fff;font-weight:600;font-size:16px;cursor:pointer;letter-spacing:.01em}
+.sim:hover{background:var(--plum-2)}
+.sim:disabled{opacity:.55;cursor:wait}
+.status{margin-top:10px;font-size:13px;border-radius:9px;padding:9px 11px;display:none}
+.status.ok{display:block;background:var(--ok-bg);color:var(--ok)}
+.status.bad{display:block;background:var(--bad-bg);color:var(--bad)}
+
+/* ---------- Footer: instructor & scholars (required by the course) ---------- */
+.foot{max-width:1500px;margin:0 auto;padding:8px 20px 28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:16px;align-items:end}
+.foot .about{font-size:12.5px;color:var(--muted)}
+.foot .about a{color:var(--teal);font-weight:600}
+.box{padding:14px 16px;border-left:4px solid var(--plum)}
+.box h3{font:600 12px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.box .ins{font-weight:600}
+.box table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+.box td{padding:3px 0;border-top:1px solid var(--line)}
+.box td+td{text-align:right;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ---------- Alert dialog ---------- */
+.modal{position:fixed;inset:0;background:rgba(20,10,25,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal[hidden]{display:none}
+.dlg{background:var(--surface);border-radius:14px;max-width:460px;width:100%;padding:20px 20px 16px;border-top:5px solid var(--bad);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.dlg h3{margin:0 0 8px;font:600 18px var(--serif);color:var(--bad)}
+.dlg p{margin:0 0 16px;font-size:15px;overflow-wrap:anywhere}
+.dlg button{float:right;border:0;border-radius:9px;padding:9px 18px;background:var(--plum);color:#fff;font-weight:600;cursor:pointer}
+.dlg::after{content:"";display:block;clear:both}
+
+/* ---------- Phones and tablets: graph above the inputs ---------- */
+@media (max-width:1020px){
+  .app{grid-template-columns:1fr}
+  .panel{position:static}
+  .plot{height:min(62vh,560px)}
+  .foot{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .top .in,.app,.foot{padding-left:16px;padding-right:16px}
+  .brand b{font-size:16px}
+  .plot{height:58vh;min-height:300px}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="in">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#4a3356"/><circle cx="16" cy="16" r="8" fill="none" stroke="#53c2b6" stroke-width="2.5"/><path d="M4 28L28 4" stroke="#e0975f" stroke-width="2.5"/></svg>
+      <div>
+        <b>Orthogonal - IOI · From Curves to Solutions</b>
+        <small>Exploring Differential Equations — MATH 205: Differential Equations, Laplace Transformation and Fourier Transformations · BAUST Khulna · CSE–3A</small>
+      </div>
+    </div>
+    <span class="badge">Group 7 · [Group Name]</span>
+  </div>
+</header>
+
+<main class="app">
+  <!-- LEFT: graph (about 70%) -->
+  <section>
+    <div class="card graph-card">
+      <div class="bar">
+        <div class="legend" id="legend">
+          <span><i id="lgFam" style="background:var(--teal)"></i>Family <code id="lgFamEq">—</code></span>
+          <span><i id="lgOrt" style="background:var(--copper)"></i>Orthogonal trajectories <code id="lgOrtEq">—</code></span>
+        </div>
+        <div class="tools">
+          <button class="icon-btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">+</button>
+          <button class="icon-btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">−</button>
+          <button class="icon-btn" id="replay" title="Play the animation again" aria-label="Replay animation">▶</button>
+          <button class="icon-btn" id="reset" title="Reset the view" aria-label="Reset view">Reset</button>
+        </div>
+      </div>
+      <div class="plot" id="plot">
+        <canvas id="cv" aria-label="Graph of the family of curves and its orthogonal trajectories" role="img"></canvas>
+        <div class="loading" id="loading">Loading the C++ engine…</div>
+        <div class="hint">Drag to move · wheel or pinch to zoom</div>
+      </div>
+      <div class="check" id="check">The perpendicularity check appears here after a simulation.</div>
+    </div>
+
+    <div class="card steps">
+      <h2>Steps derived by the program</h2>
+      <ol id="steps"><li class="empty" style="display:block">Press <b>Simulate</b> to see the derivation.</li></ol>
+    </div>
+  </section>
+
+  <!-- RIGHT: questions and inputs (about 30%) -->
+  <aside class="card panel">
+    <h2>Family of curves</h2>
+    <form id="form" novalidate autocomplete="off">
+      <div class="field">
+        <span class="lbl"><span class="num">1</span>Type of equation</span>
+        <div class="seg" role="radiogroup" aria-label="Type of equation">
+          <label id="segExp"><input type="radio" name="type" value="explicit" checked>Explicit<br>y = f(x, c)</label>
+          <label id="segImp"><input type="radio" name="type" value="implicit">Implicit<br>F(x, y, c) = 0</label>
+        </div>
+        <div class="help">Explicit: y alone on the left. Implicit: any equation with x, y and c.</div>
+      </div>
+
+      <div class="field">
+        <label for="eq"><span class="num">2</span>Equation of the family</label>
+        <input type="text" id="eq" class="eq" value="y = c x^2" spellcheck="false" autocapitalize="off" inputmode="text">
+        <div class="help">Use x, y, the parameter, numbers, + − * / ^ ( ), pi, e and sin, cos, tan, exp, ln, sqrt. Write 2x for 2·x.</div>
+      </div>
+
+      <div class="field">
+        <label for="param"><span class="num">3</span>Name of the parameter</label>
+        <input type="text" id="param" value="c" maxlength="3" spellcheck="false" autocapitalize="off">
+        <div class="help">One letter (usually c or k), not x, y or e.</div>
+      </div>
+
+      <div class="field">
+        <label for="cvals"><span class="num">4</span>Values of the parameter</label>
+        <input type="text" id="cvals" value="-3 to 3" spellcheck="false">
+        <div class="help">A range such as <b>-3 to 3</b>, or a list such as <b>1, 2, 4</b>.</div>
+      </div>
+
+      <div class="field">
+        <label for="ncurves"><span class="num">5</span>Number of curves (for a range)</label>
+        <input type="number" id="ncurves" value="7" min="1" max="40" inputmode="numeric">
+        <div class="help">1 to 40 curves, evenly spaced over the range.</div>
+      </div>
+
+      <div class="field">
+        <span class="lbl"><span class="num">6</span>View range</span>
+        <div class="grid2">
+          <div><label for="xmin">x min</label><input type="text" id="xmin" value="-5" inputmode="decimal"></div>
+          <div><label for="xmax">x max</label><input type="text" id="xmax" value="5" inputmode="decimal"></div>
+          <div><label for="ymin">y min</label><input type="text" id="ymin" value="-4" inputmode="decimal"></div>
+          <div><label for="ymax">y max</label><input type="text" id="ymax" value="4" inputmode="decimal"></div>
+        </div>
+        <div class="help">The graph keeps equal scales on both axes, so the shorter side is widened to fit the screen.</div>
+      </div>
+
+      <div class="field">
+        <label for="ntraj"><span class="num">7</span>Number of orthogonal curves</label>
+        <input type="number" id="ntraj" value="12" min="1" max="60" inputmode="numeric">
+        <div class="help">1 to 60 trajectories (optional, default 12).</div>
+      </div>
+
+      <div class="field">
+        <span class="lbl"><span class="num">8</span>Colours (optional)</span>
+        <div class="colors">
+          <label><input type="color" id="colFam" value="#1f8a80">Family</label>
+          <label><input type="color" id="colOrt" value="#c4703a">Trajectories</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="lbl">Examples — click to fill the form</span>
+        <div class="examples" id="examples"></div>
+      </div>
+
+      <button type="submit" class="sim" id="simulate" disabled>Simulate</button>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </form>
+  </aside>
+</main>
+
+<footer class="foot">
+  <div class="about">
+    Orthogonal - IOI. All the mathematics (tokenizer, parser, expression tree, differentiation,
+    elimination of the parameter, RK4 solver, curve generation and checks) is written in C++ and
+    compiled to WebAssembly. JavaScript only reads the form and draws on the canvas.
+    <br><a href="https://github.com/ALI-IOI/ORTHOGONAL-IOI" target="_blank" rel="noopener">Source code on GitHub</a> · this page is one file and also works offline.
+  </div>
+  <div class="card box">
+    <h3>Instructor</h3>
+    <div class="ins">Pulak Kundu</div>
+    <div class="help" style="margin:0 0 8px">Lecturer, Department of Mathematics, BAUST Khulna</div>
+    <h3>Scholars · Group 7 · CSE–3A</h3>
+    <table>
+      <tr><td>Sharmin Akter Shipu</td><td>1072520005101043</td></tr>
+      <tr><td>Md. Ratul Biswas Sakib</td><td>1072520005101049</td></tr>
+      <tr><td>Mehedi Hasan Munna</td><td>1072520005101051</td></tr>
+      <tr><td>Md. Rasaduzzaman Khan Tanjir</td><td>1072520005101019</td></tr>
+      <tr><td>Md. Tahir Islam</td><td>1072520005101027</td></tr>
+      <tr><td>Mohammad Ali Gazi</td><td>1072520005101050</td></tr>
+      <tr><td>Mohashyeta Nandi</td><td>1072520005101005</td></tr>
+    </table>
+  </div>
+</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="mTitle" aria-describedby="mText">
+    <h3 id="mTitle">Invalid information</h3>
+    <p id="mText"></p>
+    <button type="button" id="mOk">OK</button>
+  </div>
+</div>
+
+<script src="ortho.js"></script>
+<script>
+/* Page script: reads the form, calls the C++ function simulate(), draws the result.
+   No mathematics happens here — every number on the graph comes from C++. */
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var cv = $("cv"), ctx = cv.getContext("2d");
+  var engine = null;          // the WebAssembly module
+  var data = null;            // last result from C++
+  var lastInputs = null;      // the inputs of the last successful simulation
+  var view = null, homeView = null;
+  var progress = 1, animStart = 0, ANIM_MS = 2200;
+
+  var EXAMPLES = [
+    { label: "y = c x²", type: "explicit", eq: "y = c x^2", c: "-3 to 3", n: 7 },
+    { label: "x² + y² = c", type: "implicit", eq: "x^2 + y^2 = c", c: "1 to 16", n: 6 },
+    { label: "xy = c", type: "implicit", eq: "xy = c", c: "-4, -2, -1, 1, 2, 4", n: 6 },
+    { label: "y = c eˣ", type: "explicit", eq: "y = c e^x", c: "-2 to 2", n: 9 },
+    { label: "y² = 4cx", type: "implicit", eq: "y^2 = 4cx", c: "-2 to 2", n: 8 },
+    { label: "y = cx", type: "explicit", eq: "y = cx", c: "-3 to 3", n: 7 },
+    { label: "(x − c)² + y² = 1", type: "implicit", eq: "(x-c)^2 + y^2 = 1", c: "-4 to 4", n: 9 }
+  ];
+
+  // ---------- form helpers ----------
+  function typeValue() { return document.querySelector("input[name=type]:checked").value; }
+  function syncSeg() {
+    $("segExp").className = typeValue() === "explicit" ? "on" : "";
+    $("segImp").className = typeValue() === "implicit" ? "on" : "";
+  }
+  function readForm() {
+    return { type: typeValue(), eq: $("eq").value, param: $("param").value, c: $("cvals").value,
+             n: $("ncurves").value, xmin: $("xmin").value, xmax: $("xmax").value,
+             ymin: $("ymin").value, ymax: $("ymax").value, traj: $("ntraj").value };
+  }
+  EXAMPLES.forEach(function (ex) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "ex"; b.textContent = ex.label;
+    b.addEventListener("click", function () {
+      document.querySelector("input[name=type][value=" + ex.type + "]").checked = true; syncSeg();
+      $("eq").value = ex.eq; $("param").value = "c"; $("cvals").value = ex.c; $("ncurves").value = ex.n;
+      $("xmin").value = "-5"; $("xmax").value = "5"; $("ymin").value = "-4"; $("ymax").value = "4";
+      $("eq").focus();
+    });
+    $("examples").appendChild(b);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("input[name=type]"), function (r) { r.addEventListener("change", syncSeg); });
+  syncSeg();
+
+  // ---------- display only: write x^2 as x with a raised 2 ----------
+  function esc(t) { return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function pretty(el, text) {
+    el.innerHTML = esc(text).replace(/\^(\((?:[^()]|\([^()]*\))*\)|[0-9.]+|[a-zA-Z])/g, function (m, e) {
+      if (e.charAt(0) === "(" && /^\([^()]*\)$/.test(e)) e = e.slice(1, -1);
+      return "<sup>" + e + "</sup>";
+    });
+  }
+
+  // ---------- calling C++ ----------
+  function aspect() { return cv.clientWidth / Math.max(1, cv.clientHeight); }
+  function callCpp(inp, v) {
+    var s = function (x) { return String(x); };
+    var json = engine.ccall("simulate", "string",
+      ["string", "string", "string", "string", "string", "string", "string", "string", "string", "string", "number"],
+      [inp.type, inp.eq, inp.param, inp.c, s(inp.n), v ? s(v[0]) : inp.xmin, v ? s(v[1]) : inp.xmax,
+       v ? s(v[2]) : inp.ymin, v ? s(v[3]) : inp.ymax, s(inp.traj), aspect()]);
+    return JSON.parse(json);
+  }
+
+  // ---------- messages ----------
+  function showAlert(text) {
+    $("mText").textContent = text.replace(/^Invalid information:\s*/, "");
+    $("modal").hidden = false;
+    $("mOk").focus();
+  }
+  function closeAlert() { $("modal").hidden = true; $("simulate").focus(); }
+  $("mOk").addEventListener("click", closeAlert);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("modal").hidden) closeAlert(); });
+  function status(kind, text) { var el = $("status"); el.className = "status " + kind; el.textContent = text; }
+
+  // ---------- Simulate ----------
+  $("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!engine) return;
+    var inp = readForm();
+    var r = callCpp(inp, null);
+    if (!r.ok) { status("bad", r.error); showAlert(r.error); return; }
+    status("ok", "The information is valid. Drawing the simulation…");
+    lastInputs = inp;
+    if (window.innerWidth <= 1020 && e.isTrusted)   // phones/tablets: bring the graph into view
+      $("plot").scrollIntoView({ behavior: "smooth", block: "center" });
+    setResult(r, true);
+    homeView = r.view.slice();
+  });
+
+  function setResult(r, animate) {
+    data = r;
+    view = r.view.slice();
+    pretty($("lgFamEq"), r.steps[0] ? r.steps[0].math : "");
+    pretty($("lgOrtEq"), r.closedForm ? r.closedForm.split("⇒").pop().replace(/\(k = .*\)/, "").trim() : "(RK4, numerical)");
+    var ol = $("steps"); ol.innerHTML = "";
+    r.steps.forEach(function (st) {
+      var li = document.createElement("li");
+      var t = document.createElement("span"); t.className = "t"; t.textContent = st.title;
+      var m = document.createElement("span"); m.className = "m"; pretty(m, st.math);
+      li.appendChild(t); li.appendChild(m); ol.appendChild(li);
+    });
+    showCheck(r);
+    if (animate) { progress = 0; animStart = performance.now(); requestAnimationFrame(tick); }
+    else draw();
+  }
+  function showCheck(r) {
+    var c = r.check;
+    $("check").innerHTML = c.crossings > 0
+      ? "Perpendicularity check (C++): <b>" + c.crossings + "</b> crossings tested, largest |cos θ| = <b>" +
+        Number(c.maxAbsCos).toPrecision(2) + "</b> (smallest angle " + Number(c.minAngleDeg).toFixed(2) +
+        "°), average |cos θ| = " + Number(c.meanAbsCos).toPrecision(2) +
+        (c.skipped ? ". Skipped " + c.skipped + " crossings at singular points or sharp bends." : ".") +
+        " Computed in " + Math.round(r.ms) + " ms."
+      : "No crossings inside the view to check.";
+  }
+
+  // ---------- animation ----------
+  function tick(now) {
+    progress = Math.min(1, (now - animStart) / ANIM_MS);
+    draw();
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  $("replay").addEventListener("click", function () {
+    if (!data) return; progress = 0; animStart = performance.now(); requestAnimationFrame(tick);
+  });
+
+  // ---------- drawing ----------
+  var needsDraw = false;
+  function requestDraw() { if (!needsDraw) { needsDraw = true; requestAnimationFrame(function () { needsDraw = false; draw(); }); } }
+  function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function niceStep(raw) {
+    var p = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10)), f = raw / p;
+    return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p;
+  }
+  function fmt(v, step) {
+    if (Math.abs(v) < step * 1e-6) return "0";
+    var d = Math.max(0, -Math.floor(Math.log(step) / Math.LN10 + 1e-9));
+    return v.toFixed(d).replace("-", "−");
+  }
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function draw() {
+    resize();
+    var W = cv.clientWidth, H = cv.clientHeight;
+    ctx.fillStyle = css("--plot-bg"); ctx.fillRect(0, 0, W, H);
+    if (!view) return;
+    var sx = W / (view[1] - view[0]), sy = H / (view[3] - view[2]);
+    var X = function (x) { return (x - view[0]) * sx; }, Y = function (y) { return H - (y - view[2]) * sy; };
+
+    // grid
+    var step = niceStep((view[1] - view[0]) / Math.max(2, W / 95));
+    var minor = step / ((step / Math.pow(10, Math.floor(Math.log(step) / Math.LN10 + 1e-9))) === 2 ? 4 : 5);
+    function lines(s, color) {
+      ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.beginPath();
+      for (var x = Math.ceil(view[0] / s) * s; x <= view[1]; x += s) { var px = Math.round(X(x)) + 0.5; ctx.moveTo(px, 0); ctx.lineTo(px, H); }
+      for (var y = Math.ceil(view[2] / s) * s; y <= view[3]; y += s) { var py = Math.round(Y(y)) + 0.5; ctx.moveTo(0, py); ctx.lineTo(W, py); }
+      ctx.stroke();
+    }
+    lines(minor, css("--grid-minor"));
+    lines(step, css("--grid-major"));
+    // axes
+    var ax = Math.min(Math.max(X(0), 0), W), ay = Math.min(Math.max(Y(0), 0), H);
+    ctx.strokeStyle = css("--axis"); ctx.lineWidth = 1.5; ctx.beginPath();
+    if (X(0) >= 0 && X(0) <= W) { ctx.moveTo(X(0), 0); ctx.lineTo(X(0), H); }
+    if (Y(0) >= 0 && Y(0) <= H) { ctx.moveTo(0, Y(0)); ctx.lineTo(W, Y(0)); }
+    ctx.stroke();
+    // labels (stay on screen when an axis is off-screen, like Desmos)
+    ctx.fillStyle = css("--label"); ctx.font = "12px " + css("--sans");
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    var ly = Math.min(Math.max(ay + 5, 4), H - 18);
+    for (var x = Math.ceil(view[0] / step) * step; x <= view[1]; x += step)
+      if (Math.abs(x) > step * 1e-6) ctx.fillText(fmt(x, step), X(x), ly);
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    var lx = Math.min(Math.max(ax - 6, 30), W - 4);
+    for (var y = Math.ceil(view[2] / step) * step; y <= view[3]; y += step)
+      if (Math.abs(y) > step * 1e-6) ctx.fillText(fmt(y, step), lx, Y(y));
+    ctx.textAlign = "right"; ctx.textBaseline = "top";
+    if (X(0) >= 0 && X(0) <= W && Y(0) >= 0 && Y(0) <= H) ctx.fillText("0", X(0) - 5, Y(0) + 5);
+    // axis names
+    ctx.font = "italic 14px " + css("--serif");
+    ctx.textAlign = "right"; ctx.textBaseline = "bottom"; ctx.fillText("x", W - 6, ly - 4);
+    ctx.textAlign = "left"; ctx.textBaseline = "top"; ctx.fillText("y", lx + 6, 6);
+
+    if (!data) return;
+    // curves: family first, then trajectories (they overlap a little in time)
+    var pf = Math.min(1, progress / 0.45), po = Math.max(0, Math.min(1, (progress - 0.35) / 0.65));
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    function curves(list, frac, color, width) {
+      if (frac <= 0) return;
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath();
+      for (var k = 0; k < list.length; k++) {
+        var p = list[k].pts, n = p.length / 2, m = Math.max(2, Math.floor(n * frac));
+        ctx.moveTo(X(p[0]), Y(p[1]));
+        for (var i = 1; i < m && i < n; i++) ctx.lineTo(X(p[2 * i]), Y(p[2 * i + 1]));
+      }
+      ctx.stroke();
+    }
+    curves(data.family, pf, $("colFam").value, 2.2);
+    curves(data.ortho, po, $("colOrt").value, 2.2);
+  }
+  $("colFam").addEventListener("input", function () { $("lgFam").style.background = this.value; requestDraw(); });
+  $("colOrt").addEventListener("input", function () { $("lgOrt").style.background = this.value; requestDraw(); });
+  $("lgFam").style.background = $("colFam").value; $("lgOrt").style.background = $("colOrt").value;
+
+  // ---------- pan and zoom ----------
+  var recomputeTimer = 0;
+  function afterViewChange() {
+    requestDraw();
+    clearTimeout(recomputeTimer);
+    recomputeTimer = setTimeout(function () {
+      if (!data || !lastInputs) return;
+      var a = data.area, w = view[1] - view[0], aw = a[1] - a[0];
+      var outside = view[0] < a[0] || view[1] > a[1] || view[2] < a[2] || view[3] > a[3];
+      if (outside || w < aw / 4) {          // ask C++ for curves of the new region
+        var r = callCpp(lastInputs, view);
+        if (r.ok) { var keep = view.slice(); setResult(r, false); view = keep; draw(); }
+        else status("bad", r.error);
+      }
+    }, 220);
+  }
+  function zoomAt(px, py, factor) {
+    if (!view) return;
+    var W = cv.clientWidth, H = cv.clientHeight;
+    var wx = view[0] + px / W * (view[1] - view[0]), wy = view[3] - py / H * (view[3] - view[2]);
+    view = [wx + (view[0] - wx) * factor, wx + (view[1] - wx) * factor, wy + (view[2] - wy) * factor, wy + (view[3] - wy) * factor];
+    afterViewChange();
+  }
+  function panBy(dx, dy) {
+    var kx = (view[1] - view[0]) / cv.clientWidth, ky = (view[3] - view[2]) / cv.clientHeight;
+    view = [view[0] - dx * kx, view[1] - dx * kx, view[2] + dy * ky, view[3] + dy * ky];
+    afterViewChange();
+  }
+  cv.addEventListener("wheel", function (e) {
+    if (!view) return;
+    e.preventDefault();
+    var r = cv.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(e.deltaY * (e.deltaMode === 1 ? 0.05 : 0.0015)));
+  }, { passive: false });
+  var pts = {}, pinchDist = 0;
+  function count() { return Object.keys(pts).length; }
+  cv.addEventListener("pointerdown", function (e) {
+    if (!view) return;
+    cv.setPointerCapture(e.pointerId); pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    cv.className = "drag"; pinchDist = 0;
+  });
+  cv.addEventListener("pointermove", function (e) {
+    var p = pts[e.pointerId]; if (!p) return;
+    var ids = Object.keys(pts);
+    if (ids.length === 1) { panBy(e.clientX - p.x, e.clientY - p.y); }
+    else if (ids.length === 2) {
+      var o = pts[ids[0] == e.pointerId ? ids[1] : ids[0]];
+      var d = Math.hypot(e.clientX - o.x, e.clientY - o.y);
+      if (pinchDist > 0 && d > 0) {
+        var r = cv.getBoundingClientRect();
+        zoomAt((e.clientX + o.x) / 2 - r.left, (e.clientY + o.y) / 2 - r.top, pinchDist / d);
+      }
+      pinchDist = d;
+    }
+    p.x = e.clientX; p.y = e.clientY;
+  });
+  function up(e) { delete pts[e.pointerId]; pinchDist = 0; if (!count()) cv.className = ""; }
+  cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
+  $("zoomIn").addEventListener("click", function () { zoomAt(cv.clientWidth / 2, cv.clientHeight / 2, 1 / 1.4); });
+  $("zoomOut").addEventListener("click", function () { zoomAt(cv.clientWidth / 2, cv.clientHeight / 2, 1.4); });
+  $("reset").addEventListener("click", function () {
+    if (!lastInputs) return;
+    var r = callCpp(lastInputs, null);
+    if (r.ok) { setResult(r, false); homeView = r.view.slice(); }
+  });
+  var lastW = 0, lastH = 0;
+  window.addEventListener("resize", function () {
+    if (cv.clientWidth === lastW && cv.clientHeight === lastH) return;
+    lastW = cv.clientWidth; lastH = cv.clientHeight;
+    if (view) {  // keep the centre and the scale, change only the visible size
+      var cx = (view[0] + view[1]) / 2, cy = (view[2] + view[3]) / 2, k = (view[1] - view[0]) / Math.max(1, cv.width / Math.min(window.devicePixelRatio || 1, 2));
+      view = [cx - k * cv.clientWidth / 2, cx + k * cv.clientWidth / 2, cy - k * cv.clientHeight / 2, cy + k * cv.clientHeight / 2];
+      afterViewChange();
+    } else requestDraw();
+  });
+
+  // ---------- start: load the C++ engine ----------
+  draw();
+  function fail(msg) { $("loading").textContent = msg; }
+  if (typeof WebAssembly !== "object" || typeof createOrthoModule !== "function") {
+    fail("This browser cannot run WebAssembly. Please update the browser (Chrome, Edge, Firefox or Safari).");
+    return;
+  }
+  createOrthoModule().then(function (m) {
+    engine = m;
+    $("loading").style.display = "none";
+    $("simulate").disabled = false;
+    $("form").dispatchEvent(new Event("submit", { cancelable: true }));  // first example on load
+  }, function () {
+    fail("The C++ engine could not start. Please reload the page or update the browser.");
+  });
+})();
+</script>
+</body>
+</html>

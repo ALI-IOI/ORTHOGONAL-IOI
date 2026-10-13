@@ -1,0 +1,161 @@
+=== 1. y = c x^2  [y = c x^2]
+  - Family of curves (parameter c):  y = cx^2
+  - Differentiate with respect to x:  dy/dx = 2cx
+  - Eliminate c → differential equation of the family:  From the family: c = y/x^2   ⇒   dy/dx = 2y/x
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(2y/x)   ⇒   dy/dx = -x/(2y)
+  - Separate the variables:  y dy = -x/2 dx
+  - Integrate both sides:  ∫ y dy = ∫ -x/2 dx   ⇒   y^2/2 = -x^2/4 + K
+  - Orthogonal trajectories (closed form):  x^2 + 2y^2 = k
+  - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "x^2 + 2y^2 = k"
+  crossings=56  max|cos|=0.0251862  mean|cos|=0.00445631  skipped(singular)=0  time=2.63314 ms  json=87 KB
+  RESULT: PASS
+=== 2. x^2 + y^2 = c  [x^2 + y^2 = c]
+  - Family of curves (parameter c):  x^2 + y^2 = c
+  - Differentiate with respect to x (implicit differentiation):  2x + 2y·dy/dx = 0   ⇒   dy/dx = -x/y
+  - Eliminate c → differential equation of the family:  From the family: c = x^2 + y^2   ⇒   dy/dx = -x/y
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(-x/y)   ⇒   dy/dx = y/x
+  - Separate the variables:  1/y dy = 1/x dx
+  - Integrate both sides:  ∫ 1/y dy = ∫ 1/x dx   ⇒   ln(|y|) = ln(|x|) + K
+  - Orthogonal trajectories (closed form):  ln(|y|) - ln(|x|) = K   ⇒   y = kx   (k = ±e^(K/1), any constant)
+  - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "ln(|y|) - ln(|x|) = K   ⇒   y = kx   (k = ±e^(K/1), any constant)"
+  crossings=119  max|cos|=6.14381e-15  mean|cos|=1.12759e-15  skipped(singular)=0  time=17.897 ms  json=132 KB
+  RESULT: PASS
+=== 3. xy = c  [xy = c]
+  - Family of curves (parameter c):  xy = c
+  - Differentiate with respect to x (implicit differentiation):  y + x·dy/dx = 0   ⇒   dy/dx = -y/x
+  - Eliminate c → differential equation of the family:  From the family: c = xy   ⇒   dy/dx = -y/x
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(-y/x)   ⇒   dy/dx = x/y
+  - Separate the variables:  y dy = x dx
+  - Integrate both sides:  ∫ y dy = ∫ x dx   ⇒   y^2/2 = x^2/2 + K
+  - Orthogonal trajectories (closed form):  x^2 - y^2 = k
+  - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "x^2 - y^2 = k"
+  crossings=73  max|cos|=0.00627375  mean|cos|=0.00205227  skipped(singular)=0  time=7.83076 ms  json=160 KB
+  RESULT: PASS
+=== 4. y = c e^x  [y = c e^x]
+  - Family of curves (parameter c):  y = ce^x
+  - Differentiate with respect to x:  dy/dx = ce^x
+  - Eliminate c → differential equation of the family:  From the family: c = y/e^x   ⇒   dy/dx = y
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(y)   ⇒   dy/dx = -1/y
+  - Separate the variables:  y dy = -dx
+  - Integrate both sides:  ∫ y dy = ∫ -dx   ⇒   y^2/2 = -x + K
+  - Orthogonal trajectories (closed form):  2x + y^2 = k
+  - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "2x + y^2 = k"
+  crossings=71  max|cos|=0.0159897  mean|cos|=0.00417022  skipped(singular)=9  time=3.74032 ms  json=226 KB
+  RESULT: PASS
+=== 5. y = cx (lines)  [y = cx]
+  - Family of curves (parameter c):  y = cx
+  - Differentiate with respect to x:  dy/dx = c
+  - Eliminate c → differential equation of the family:  From the family: c = y/x   ⇒   dy/dx = y/x
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(y/x)   ⇒   dy/dx = -x/y
+  - Separate the variables:  y dy = -x dx
+  - Integrate both sides:  ∫ y dy = ∫ -x dx   ⇒   y^2/2 = -x^2/2 + K
+  - Orthogonal trajectories (closed form):  x^2 + y^2 = k
+  - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "x^2 + y^2 = k"
+  crossings=43  max|cos|=0.0158107  mean|cos|=0.00341466  skipped(singular)=29  time=1.69906 ms  json=107 KB
+  RESULT: PASS
+=== 6a. (x-c)^2 + y^2 = c^2 (c^2 cancels -> linear)  [(x-c)^2 + y^2 = c^2]
+  - Family of curves (parameter c):  (x - c)^2 + y^2 = c^2
+  - Differentiate with respect to x (implicit differentiation):  (2x - 2c) + 2y·dy/dx = 0   ⇒   dy/dx = c/y - x/y
+  - Eliminate c → differential equation of the family:  From the family: c = x/2 + y^2/(2x)   ⇒   dy/dx = y/(2x) - x/(2y)
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(y/(2x) - x/(2y))   ⇒   dy/dx = -2xy/(y^2 - x^2)
+  - Solve:  The equation is not separable (the factor y^2 - x^2 contains both x and y). Solved numerically with the 4th-order Runge–Kutta method (RK4).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: ""
+  crossings=51  max|cos|=0.0179755  mean|cos|=0.00452875  skipped(singular)=89  time=20.7662 ms  json=98 KB
+  RESULT: PASS
+=== 6b. (x-c)^2 + y^2 = 1 (non-linear in c)  [(x-c)^2 + y^2 = 1]
+  - Family of curves (parameter c):  (x - c)^2 + y^2 = 1
+  - Differentiate with respect to x (implicit differentiation):  (2x - 2c) + 2y·dy/dx = 0   ⇒   dy/dx = c/y - x/y
+  - Eliminate c:  c appears non-linearly, so it cannot be isolated by simple algebra. The program finds c numerically at every point from F(x, y, c) = 0 (Newton's method) and uses dy/dx = c/y - x/y.
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(c/y - x/y) = y/(x - c)   (c from step 3)
+  - Solve:  No closed form attempted because c was not eliminated symbolically. Solved numerically with the 4th-order Runge–Kutta method (RK4).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: ""
+  crossings=24  max|cos|=0.00682724  mean|cos|=0.00275017  skipped(singular)=0  time=20.3933 ms  json=46 KB
+  RESULT: PASS
+=== 7. y = c (horizontal lines)  [y = c]
+  - Family of curves (parameter c):  y = c
+  - Differentiate with respect to x:  dy/dx = 0
+  - Eliminate c → differential equation of the family:  From the family: c = y   ⇒   dy/dx = 0
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = 0 for the family, and −1/0 is undefined: the trajectories are vertical, dx/dy = 0.
+  - Solve:  dx/dy = 0   ⇒   x = k   (vertical lines)
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "x = k"
+  crossings=63  max|cos|=0  mean|cos|=0  skipped(singular)=0  time=1.82678 ms  json=103 KB
+  RESULT: PASS
+=== 8. y = sin(x) + c (not separable? ortho -1/cos x)  [y = sin(x) + c]
+  - Family of curves (parameter c):  y = sin(x) + c
+  - Differentiate with respect to x:  dy/dx = cos(x)
+  - Eliminate c → differential equation of the family:  From the family: c = y - sin(x)   ⇒   dy/dx = cos(x)
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(cos(x))   ⇒   dy/dx = -1/cos(x)
+  - Separate the variables:  dy = -1/cos(x) dx
+  - Solve:  Separable, but an integral is outside the program's small table of integrals. Solved numerically with the 4th-order Runge–Kutta method (RK4).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: ""
+  crossings=84  max|cos|=0.00490494  mean|cos|=0.00133827  skipped(singular)=0  time=2.7611 ms  json=202 KB
+  RESULT: PASS
+=== 9. y^2 = 4cx (parabolas)  [y^2 = 4cx]
+  - Family of curves (parameter c):  y^2 = 4cx
+  - Differentiate with respect to x (implicit differentiation):  (-4c) + 2y·dy/dx = 0   ⇒   dy/dx = 2c/y
+  - Eliminate c → differential equation of the family:  From the family: c = y^2/(4x)   ⇒   dy/dx = y/(2x)
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  dy/dx = −1/(y/(2x))   ⇒   dy/dx = -2x/y
+  - Separate the variables:  y dy = -2x dx
+  - Integrate both sides:  ∫ y dy = ∫ -2x dx   ⇒   y^2/2 = -x^2 + K
+  - Orthogonal trajectories (closed form):  2x^2 + y^2 = k
+  - Check:  Differentiating the answer gives back the orthogonal equation at 80 test points (checked by the program).
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "2x^2 + y^2 = k"
+  crossings=48  max|cos|=0.0220751  mean|cos|=0.00315424  skipped(singular)=16  time=16.8578 ms  json=98 KB
+  RESULT: PASS
+=== 10. x = c (vertical lines)  [x = c]
+  - Family of curves (parameter c):  x = c
+  - Differentiate with respect to x:  ∂F/∂y = 0, so every curve is a vertical line x = constant (dx/dy = 0).
+  - Eliminate c:  c = x   (no slope needed: the curves are vertical lines)
+  - Orthogonal trajectories: replace dy/dx by −1/(dy/dx):  The family is vertical (dx/dy = 0), so the trajectories are horizontal: dy/dx = 0.
+  - Solve:  dy/dx = 0   ⇒   y = k   (horizontal lines)
+  - Graph:  Trajectories traced with RK4, step h = 0.032 (arc length), starting from points spread over the view.
+  closed form: "y = k"
+  crossings=35  max|cos|=0  mean|cos|=0  skipped(singular)=0  time=6.48818 ms  json=61 KB
+  RESULT: PASS
+=== INVALID empty equation: "Invalid information: The field 'Equation of the family' is empty. Please fill it in."
+  RESULT: PASS
+=== INVALID empty c values: "Invalid information: The field 'Values of c' is empty. Please fill it in."
+  RESULT: PASS
+=== INVALID missing parameter: "Invalid information: The equation does not contain the parameter 'c', so it is ONE curve, not a family of curves. Example of a family: y = cx^2."
+  RESULT: PASS
+=== INVALID unbalanced brackets: "Invalid information: Unbalanced brackets: '(' at position 1 is never closed."
+  RESULT: PASS
+=== INVALID unbalanced brackets 2: "Invalid information: Unbalanced brackets: ')' at position 11 has no matching opening bracket."
+  RESULT: PASS
+=== INVALID two parameters: "Invalid information: Unknown symbol 'a' at position 5. Only x, y, the parameter c, pi, e and functions such as sin, cos, exp, ln, sqrt are allowed. A family must have exactly one parameter."
+  RESULT: PASS
+=== INVALID implicit without =: "Invalid information: An implicit equation needs an '=' sign, for example x^2 + y^2 = c. (For F(x, y, c) = 0 type '= 0' at the end.)"
+  RESULT: PASS
+=== INVALID explicit with y on right: "Invalid information: In the explicit type y = f(x, c) the right side must not contain y. Choose the implicit type instead."
+  RESULT: PASS
+=== INVALID parameter cancels: "Invalid information: The parameter 'c' cancels out of the equation, so all curves are the same. A family needs a parameter that really changes the curve."
+  RESULT: PASS
+=== INVALID no x or y: "Invalid information: The equation contains neither x nor y, so it does not describe curves in the xy-plane."
+  RESULT: PASS
+=== INVALID no visible curve: "Invalid information: No curve of the family is visible for these values of c in the chosen x and y range. Try other values (for example x^2 + y^2 = c needs c > 0) or a larger range."
+  RESULT: PASS
+=== INVALID bad range: "Invalid information: 'x min' must be smaller than 'x max'."
+  RESULT: PASS
+=== INVALID bad number: "Invalid information: 'x min' must be a number (you typed 'abc'). Unknown symbol 'a' at position 1. Only numbers, pi, e and functions such as sin, cos, exp, ln, sqrt are allowed."
+  RESULT: PASS
+=== INVALID two operators: "Invalid information: The operator '/' at position 7 has nothing on its left (two operators in a row?)."
+  RESULT: PASS
+=== INVALID bad parameter name: "Invalid information: The parameter cannot be called 'x' because that letter already means something. Use c or k."
+  RESULT: PASS
+
+ALL TESTS PASSED
